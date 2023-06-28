@@ -25,6 +25,15 @@ function App() {
     );
   }
 
+  function handleClearList() {
+    const confirmed = window.confirm(
+      "Are you sure you want to clear the list?"
+    ); // Ask the user to confirm
+
+    if (!confirmed) return; // If the user cancels, return
+    setItems([]); // Clear the list
+  }
+
   return (
     <div className="app">
       <Logo />
@@ -33,6 +42,7 @@ function App() {
         items={items}
         handleDelete={handleDelete}
         handleToggle={handleToggle}
+        handleClearList={handleClearList}
       />
       {/* Pass the items to the PackingList component */}
       <Stats items={items} />
@@ -84,7 +94,7 @@ function Form({ handleAdd }) {
   );
 }
 
-function PackingList({ items, handleDelete, handleToggle }) {
+function PackingList({ items, handleDelete, handleToggle, handleClearList }) {
   const [sort, setSort] = useState("input"); // Create a state for the sort value
 
   let sortedItems = [...items]; // Create a copy of the items array
@@ -123,6 +133,7 @@ function PackingList({ items, handleDelete, handleToggle }) {
           <option value="description">sort by description</option>
           <option value="packed">sort by packed status</option>
         </select>
+        <button onClick={handleClearList}>Clear List</button>
       </div>
       {/* 
         Create a select element with three options
