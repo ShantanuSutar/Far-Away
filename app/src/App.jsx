@@ -20,10 +20,26 @@ function Logo() {
 }
 
 function Form() {
+  function handleSubmit(event) {
+    event.preventDefault();
+    console.log(
+      event.target.elements[0].value + " " + event.target.elements[1].value
+    );
+  }
+
   return (
-    <div className="add-form">
+    <form className="add-form" onSubmit={handleSubmit}>
       <h3>What do you need 😎 from your trip?</h3>
-    </div>
+      <select>
+        {Array.from({ length: 20 }, (_, i) => (
+          <option value={i + 1} key={i + 1}>
+            {i + 1}
+          </option>
+        ))}
+      </select>
+      <input type="text" placeholder="Item..." />
+      <button>Add</button>
+    </form>
   );
 }
 
