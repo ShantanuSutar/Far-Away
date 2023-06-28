@@ -6,11 +6,18 @@ const initialItems = [
 ];
 
 function App() {
+  const [items, setItems] = useState([...initialItems]); // Set the initial state to the initialItems array
+
+  function handleAdd(newItem) {
+    setItems((initialItems) => [...initialItems, newItem]);
+  } // Add a new item to the list
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form handleAdd={handleAdd} /> {/* Pass the handleAdd function */}
+      <PackingList items={items} />
+      {/* Pass the items to the PackingList component */}
       <Stats />
     </div>
   );
@@ -20,14 +27,20 @@ function Logo() {
   return <h1>🌴 Far Away 💼</h1>;
 }
 
-function Form() {
+function Form({ handleAdd }) {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
+
   function handleSubmit(event) {
-    event.preventDefault();
+    event.preventDefault(); // stop from reloading the page
+
+    if (!description) return; // If no description provided, return
 
     const newItem = { description, quantity, packed: false, id: Date.now() };
-    console.log(newItem);
+
+    handleAdd(newItem);
+    setDescription(""); // Reset the description to empty
+    setQuantity(1); // Reset the quantity to 1
   }
 
   return (
@@ -40,6 +53,9 @@ function Form() {
           </option>
         ))}
       </select>
+      {
+        // Array.from creates an array of 20 elements, and then we map over it to create the options
+      }
       <input
         type="text"
         placeholder="Item..."
@@ -51,11 +67,11 @@ function Form() {
   );
 }
 
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item key={item.id} item={item} />
         ))}
       </ul>
