@@ -8,6 +8,10 @@ const initialItems = [
 function App() {
   const [items, setItems] = useState([...initialItems]); // Set the initial state to the initialItems array
 
+  function handleDelete(id) {
+    setItems((items) => items.filter((item) => item.id !== id));
+  } //  filter out the item with the id passed as an argument || Delete an item from the list
+
   function handleAdd(newItem) {
     setItems((initialItems) => [...initialItems, newItem]);
   } // Add a new item to the list
@@ -16,7 +20,7 @@ function App() {
     <div className="app">
       <Logo />
       <Form handleAdd={handleAdd} /> {/* Pass the handleAdd function */}
-      <PackingList items={items} />
+      <PackingList items={items} handleDelete={handleDelete} />
       {/* Pass the items to the PackingList component */}
       <Stats />
     </div>
@@ -67,25 +71,26 @@ function Form({ handleAdd }) {
   );
 }
 
-function PackingList({ items }) {
+function PackingList({ items, handleDelete }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item key={item.id} item={item} />
+          <Item key={item.id} item={item} handleDelete={handleDelete} />
         ))}
       </ul>
     </div>
-  );
+  ); // Map over the items and create an Item component for each one
 }
 
-function Item({ item }) {
+function Item({ item, handleDelete }) {
   return (
     <li>
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
-      </span>
-      <button>❌</button>
+      </span>{" "}
+      {/* If the item is packed, add a line-through style */}
+      <button onClick={() => handleDelete(item.id)}>❌</button>
     </li>
   );
 }
