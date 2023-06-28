@@ -2,7 +2,7 @@ import { useState } from "react";
 const initialItems = [
   { id: 1, description: "Passports", quantity: 2, packed: false },
   { id: 2, description: "Socks", quantity: 12, packed: false },
-  { id: 3, description: "Charger", quantity: 1, packed: true },
+  { id: 3, description: "Charger", quantity: 1, packed: false },
 ];
 
 function App() {
@@ -16,11 +16,24 @@ function App() {
     setItems((initialItems) => [...initialItems, newItem]);
   } // Add a new item to the list
 
+  function handleToggle(id) {
+    setItems((items) =>
+      items.map((item) => {
+        if (item.id === id) return { ...item, packed: !item.packed };
+        return item;
+      })
+    );
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form handleAdd={handleAdd} /> {/* Pass the handleAdd function */}
-      <PackingList items={items} handleDelete={handleDelete} />
+      <PackingList
+        items={items}
+        handleDelete={handleDelete}
+        handleToggle={handleToggle}
+      />
       {/* Pass the items to the PackingList component */}
       <Stats />
     </div>
@@ -71,21 +84,31 @@ function Form({ handleAdd }) {
   );
 }
 
-function PackingList({ items, handleDelete }) {
+function PackingList({ items, handleDelete, handleToggle }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item key={item.id} item={item} handleDelete={handleDelete} />
+          <Item
+            key={item.id}
+            item={item}
+            handleDelete={handleDelete}
+            handleToggle={handleToggle}
+          />
         ))}
       </ul>
     </div>
   ); // Map over the items and create an Item component for each one
 }
 
-function Item({ item, handleDelete }) {
+function Item({ item, handleDelete, handleToggle }) {
   return (
     <li>
+      <input
+        type="checkbox"
+        value={item.packed}
+        onChange={() => handleToggle(item.id)}
+      />
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>{" "}
